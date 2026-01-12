@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import '../styles/login.css';
 import apiService from '../apiService';
 
-console.log(' Login.jsx loaded, apiService is:', typeof apiService);
-console.log(' apiService.login is:', typeof apiService?.login);
-
 function Login({ onLoginSuccess }) {
   const [credentials, setCredentials] = useState({
     username: '',
@@ -18,31 +15,13 @@ function Login({ onLoginSuccess }) {
     setError('');
     setLoading(true);
 
-    console.log(' Login form submitted');
-    console.log('Credentials:', credentials.username);
-    console.log('Calling apiService.login...');
-
     try {
       const data = await apiService.login(credentials);
-      
-      console.log('Storing token in localStorage...');
-      console.log('Token to store:', data.token?.substring(0, 20) + '...');
-      
-      // Store token in localStorage
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
-      
-      console.log(' Token stored successfully');
-      console.log('Verifying localStorage...');
-      console.log('Token in storage:', localStorage.getItem('token')?.substring(0, 20) + '...');
-      console.log('User in storage:', localStorage.getItem('user'));
-      
-      // Call success callback
-      console.log('Calling onLoginSuccess callback...');
       onLoginSuccess(data);
-      
     } catch (error) {
-      console.error(' Login error:', error);
+      console.error('Login error:', error);
       setError('Invalid username or password');
     } finally {
       setLoading(false);
@@ -51,24 +30,41 @@ function Login({ onLoginSuccess }) {
 
   return (
     <div className="login-container">
+      <div className="login-background">
+        <div className="medical-pattern"></div>
+      </div>
+      
       <div className="login-card">
         <div className="login-header">
           <div className="logo">
-            <span className="logo-icon">🏥</span>
-            <h1>HospitalDash</h1>
+            <div className="medical-cross">
+              <span className="cross-horizontal"></span>
+              <span className="cross-vertical"></span>
+            </div>
+            <div className="logo-text">
+              <h1>Hospital Management</h1>
+              <p className="subtitle">System Dashboard</p>
+            </div>
           </div>
-          <p>Sign in to your account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
           {error && (
             <div className="error-message">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd"/>
+              </svg>
               {error}
             </div>
           )}
 
           <div className="form-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd"/>
+              </svg>
+              Username
+            </label>
             <input
               id="username"
               type="text"
@@ -81,7 +77,12 @@ function Login({ onLoginSuccess }) {
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"/>
+              </svg>
+              Password
+            </label>
             <input
               id="password"
               type="password"
@@ -97,17 +98,35 @@ function Login({ onLoginSuccess }) {
             className="login-button"
             disabled={loading}
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? (
+              <>
+                <span className="spinner"></span>
+                Signing in...
+              </>
+            ) : (
+              <>
+                Sign In
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"/>
+                </svg>
+              </>
+            )}
           </button>
         </form>
 
         <div className="login-footer">
-          <p className="demo-credentials">
-            <strong>Demo Credentials:</strong><br />
-            Username: <code>admin</code><br />
-            Password: <code>admin123</code>
-          </p>
+          <div className="demo-credentials">
+            <div className="demo-badge">Demo Access</div>
+            <div className="demo-info">
+              <span><strong>Username:</strong> admin</span>
+              <span><strong>Password:</strong> admin123</span>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <div className="login-info">
+        <p>© 2026 Hospital Management System. All rights reserved.</p>
       </div>
     </div>
   );
