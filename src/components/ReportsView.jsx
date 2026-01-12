@@ -31,6 +31,16 @@ function ReportsView() {
     }
   };
 
+  // Format currency with commas
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(amount);
+  };
+
   const calculateDoctorPayroll = (doctor) => {
     const visits = doctor.numVisitedPatients || 0;
     const fee = doctor.officeVisitFee || 0;
@@ -67,58 +77,71 @@ function ReportsView() {
         <>
           {/* Summary Cards */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', padding: '2rem' }}>
-            <div style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', padding: '1.5rem', borderRadius: '12px', color: 'white' }}>
-              <div style={{ fontSize: '0.9rem', opacity: 0.9, marginBottom: '0.5rem' }}>Total Payroll</div>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>${totalPayroll.toFixed(2)}</div>
+            <div style={{ background: 'linear-gradient(135deg, #0a4d68 0%, #088395 100%)', padding: '1.5rem', borderRadius: '16px', color: 'white', boxShadow: '0 10px 30px rgba(8, 131, 149, 0.3)' }}>
+              <div style={{ fontSize: '0.9rem', opacity: 0.9, marginBottom: '0.5rem', fontWeight: '500' }}>Total Payroll</div>
+              <div style={{ fontSize: '2.25rem', fontWeight: 'bold', letterSpacing: '-0.5px' }}>{formatCurrency(totalPayroll)}</div>
+              <div style={{ fontSize: '0.85rem', opacity: 0.8, marginTop: '0.75rem' }}>
+                 {doctors.length + employees.length} Total Staff
+              </div>
             </div>
 
-            <div style={{ background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', padding: '1.5rem', borderRadius: '12px', color: 'white' }}>
-              <div style={{ fontSize: '0.9rem', opacity: 0.9, marginBottom: '0.5rem' }}>Doctor Payroll</div>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>${totalDoctorPayroll.toFixed(2)}</div>
-              <div style={{ fontSize: '0.8rem', opacity: 0.9, marginTop: '0.5rem' }}>{doctors.length} doctors</div>
+            <div style={{ background: 'linear-gradient(135deg, #088395 0%, #05bfdb 100%)', padding: '1.5rem', borderRadius: '16px', color: 'white', boxShadow: '0 10px 30px rgba(5, 191, 219, 0.3)' }}>
+              <div style={{ fontSize: '0.9rem', opacity: 0.9, marginBottom: '0.5rem', fontWeight: '500' }}>Doctor Payroll</div>
+              <div style={{ fontSize: '2.25rem', fontWeight: 'bold', letterSpacing: '-0.5px' }}>{formatCurrency(totalDoctorPayroll)}</div>
+              <div style={{ fontSize: '0.85rem', opacity: 0.8, marginTop: '0.75rem' }}>
+                 {doctors.length} Doctors
+              </div>
             </div>
 
-            <div style={{ background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', padding: '1.5rem', borderRadius: '12px', color: 'white' }}>
-              <div style={{ fontSize: '0.9rem', opacity: 0.9, marginBottom: '0.5rem' }}>Employee Payroll</div>
-              <div style={{ fontSize: '2rem', fontWeight: 'bold' }}>${totalEmployeePayroll.toFixed(2)}</div>
-              <div style={{ fontSize: '0.8rem', opacity: 0.9, marginTop: '0.5rem' }}>{employees.length} employees</div>
+            <div style={{ background: 'linear-gradient(135deg, #05bfdb 0%, #00d4e4 100%)', padding: '1.5rem', borderRadius: '16px', color: 'white', boxShadow: '0 10px 30px rgba(0, 212, 228, 0.3)' }}>
+              <div style={{ fontSize: '0.9rem', opacity: 0.9, marginBottom: '0.5rem', fontWeight: '500' }}>Employee Payroll</div>
+              <div style={{ fontSize: '2.25rem', fontWeight: 'bold', letterSpacing: '-0.5px' }}>{formatCurrency(totalEmployeePayroll)}</div>
+              <div style={{ fontSize: '0.85rem', opacity: 0.8, marginTop: '0.75rem' }}>
+                 {employees.length} Employees
+              </div>
             </div>
           </div>
 
           {/* Doctor Payroll Table */}
           <div style={{ padding: '0 2rem 2rem 2rem' }}>
-            <h3 style={{ marginBottom: '1rem', color: '#2c3e50' }}>Doctor Payroll Breakdown</h3>
-            <div className="table-wrap">
+            <h3 style={{ marginBottom: '1rem', color: '#1a3a52', fontSize: '1.25rem', fontWeight: '700' }}>
+             Doctor Payroll Breakdown
+            </h3>
+            <div className="table-wrap" style={{ borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
               {doctors.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '2rem', color: '#999' }}>
                   No doctors found
                 </div>
               ) : (
                 <table className="table">
-                  <thead>
+                  <thead style={{ background: 'linear-gradient(135deg, #088395 0%, #05bfdb 100%)', color: 'white' }}>
                     <tr>
-                      <th>Doctor Name</th>
-                      <th>Specialty</th>
-                      <th>Patients Visited</th>
-                      <th>Visit Fee</th>
-                      <th>Total Earned</th>
+                      <th style={{ color: 'white' }}>Doctor Name</th>
+                      <th style={{ color: 'white' }}>Specialty</th>
+                      <th style={{ color: 'white' }}>Patients Visited</th>
+                      <th style={{ color: 'white' }}>Visit Fee</th>
+                      <th style={{ color: 'white' }}>Total Earned</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {doctors.map((doctor) => (
-                      <tr key={doctor.id}>
-                        <td>Dr. {doctor.firstName} {doctor.lastName}</td>
-                        <td>{doctor.specialty || 'General'}</td>
-                        <td>{doctor.numVisitedPatients || 0}</td>
-                        <td>${(doctor.officeVisitFee || 0).toFixed(2)}</td>
-                        <td style={{ fontWeight: 'bold', color: '#2d3748' }}>
-                          ${calculateDoctorPayroll(doctor).toFixed(2)}
+                    {doctors.map((doctor, index) => (
+                      <tr key={doctor.id} style={{ background: index % 2 === 0 ? 'white' : '#f8fafc' }}>
+                        <td style={{ fontWeight: '600', color: '#1e293b' }}>Dr. {doctor.firstName} {doctor.lastName}</td>
+                        <td style={{ color: '#64748b' }}>{doctor.specialty || 'General'}</td>
+                        <td style={{ textAlign: 'center', color: '#475569' }}>{doctor.numVisitedPatients || 0}</td>
+                        <td style={{ color: '#475569' }}>{formatCurrency(doctor.officeVisitFee || 0)}</td>
+                        <td style={{ fontWeight: 'bold', color: '#088395' }}>
+                          {formatCurrency(calculateDoctorPayroll(doctor))}
                         </td>
                       </tr>
                     ))}
-                    <tr style={{ background: '#f7fafc', fontWeight: 'bold' }}>
-                      <td colSpan="4" style={{ textAlign: 'right' }}>Total Doctor Payroll:</td>
-                      <td style={{ color: '#667eea' }}>${totalDoctorPayroll.toFixed(2)}</td>
+                    <tr style={{ background: '#e0f2fe', fontWeight: 'bold' }}>
+                      <td colSpan="4" style={{ textAlign: 'right', color: '#1e293b', fontSize: '1.05rem' }}>
+                        Total Doctor Payroll:
+                      </td>
+                      <td style={{ color: '#088395', fontSize: '1.1rem' }}>
+                        {formatCurrency(totalDoctorPayroll)}
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -128,38 +151,44 @@ function ReportsView() {
 
           {/* Employee Payroll Table */}
           <div style={{ padding: '0 2rem 2rem 2rem' }}>
-            <h3 style={{ marginBottom: '1rem', color: '#2c3e50' }}>Employee Payroll Breakdown</h3>
-            <div className="table-wrap">
+            <h3 style={{ marginBottom: '1rem', color: '#1a3a52', fontSize: '1.25rem', fontWeight: '700' }}>
+               Employee Payroll Breakdown
+            </h3>
+            <div className="table-wrap" style={{ borderRadius: '12px', overflow: 'hidden', border: '1px solid #e2e8f0' }}>
               {employees.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: '2rem', color: '#999' }}>
                   No employees found
                 </div>
               ) : (
                 <table className="table">
-                  <thead>
+                  <thead style={{ background: 'linear-gradient(135deg, #05bfdb 0%, #00d4e4 100%)', color: 'white' }}>
                     <tr>
-                      <th>Employee Name</th>
-                      <th>Role</th>
-                      <th>Hours Worked</th>
-                      <th>Hourly Rate</th>
-                      <th>Total Earned</th>
+                      <th style={{ color: 'white' }}>Employee Name</th>
+                      <th style={{ color: 'white' }}>Role</th>
+                      <th style={{ color: 'white' }}>Hours Worked</th>
+                      <th style={{ color: 'white' }}>Hourly Rate</th>
+                      <th style={{ color: 'white' }}>Total Earned</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {employees.map((employee) => (
-                      <tr key={employee.id}>
-                        <td>{employee.name}</td>
-                        <td>{employee.role}</td>
-                        <td>{employee.monthlyWorkingHours || 0} hrs</td>
-                        <td>${(employee.hourlyRate || 0).toFixed(2)}/hr</td>
-                        <td style={{ fontWeight: 'bold', color: '#2d3748' }}>
-                          ${calculateEmployeePayroll(employee).toFixed(2)}
+                    {employees.map((employee, index) => (
+                      <tr key={employee.id} style={{ background: index % 2 === 0 ? 'white' : '#f8fafc' }}>
+                        <td style={{ fontWeight: '600', color: '#1e293b' }}>{employee.name}</td>
+                        <td style={{ color: '#64748b' }}>{employee.role}</td>
+                        <td style={{ textAlign: 'center', color: '#475569' }}>{employee.monthlyWorkingHours || 0} hrs</td>
+                        <td style={{ color: '#475569' }}>{formatCurrency(employee.hourlyRate || 0)}/hr</td>
+                        <td style={{ fontWeight: 'bold', color: '#05bfdb' }}>
+                          {formatCurrency(calculateEmployeePayroll(employee))}
                         </td>
                       </tr>
                     ))}
-                    <tr style={{ background: '#f7fafc', fontWeight: 'bold' }}>
-                      <td colSpan="4" style={{ textAlign: 'right' }}>Total Employee Payroll:</td>
-                      <td style={{ color: '#4facfe' }}>${totalEmployeePayroll.toFixed(2)}</td>
+                    <tr style={{ background: '#e0f2fe', fontWeight: 'bold' }}>
+                      <td colSpan="4" style={{ textAlign: 'right', color: '#1e293b', fontSize: '1.05rem' }}>
+                        Total Employee Payroll:
+                      </td>
+                      <td style={{ color: '#05bfdb', fontSize: '1.1rem' }}>
+                        {formatCurrency(totalEmployeePayroll)}
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -169,19 +198,37 @@ function ReportsView() {
 
           {/* Summary Section */}
           <div style={{ padding: '0 2rem 2rem 2rem' }}>
-            <div style={{ background: '#f7fafc', padding: '1.5rem', borderRadius: '8px', border: '2px solid #e2e8f0' }}>
-              <h3 style={{ marginBottom: '1rem', color: '#2c3e50' }}>Monthly Summary</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div style={{ 
+              background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)', 
+              padding: '2rem', 
+              borderRadius: '16px', 
+              border: '2px solid #bae6fd',
+              boxShadow: '0 4px 12px rgba(8, 131, 149, 0.1)'
+            }}>
+              <h3 style={{ marginBottom: '1.5rem', color: '#0a4d68', fontSize: '1.25rem', fontWeight: '700' }}>
+               Monthly Summary
+              </h3>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
                 <div>
-                  <p style={{ color: '#718096', marginBottom: '0.5rem' }}>Total Staff:</p>
-                  <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#2d3748' }}>
+                  <p style={{ color: '#64748b', marginBottom: '0.5rem', fontSize: '0.95rem', fontWeight: '500' }}>
+                    Total Staff Members
+                  </p>
+                  <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#0a4d68' }}>
                     {doctors.length + employees.length}
+                  </p>
+                  <p style={{ color: '#64748b', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+                    {doctors.length} Doctors • {employees.length} Employees
                   </p>
                 </div>
                 <div>
-                  <p style={{ color: '#718096', marginBottom: '0.5rem' }}>Total Monthly Payroll:</p>
-                  <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#667eea' }}>
-                    ${totalPayroll.toFixed(2)}
+                  <p style={{ color: '#64748b', marginBottom: '0.5rem', fontSize: '0.95rem', fontWeight: '500' }}>
+                    Total Monthly Payroll
+                  </p>
+                  <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#088395' }}>
+                    {formatCurrency(totalPayroll)}
+                  </p>
+                  <p style={{ color: '#64748b', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+                    For period ending {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                   </p>
                 </div>
               </div>
